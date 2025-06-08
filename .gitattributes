@@ -1,0 +1,4 @@
+*.java linguist-language=Java
+*.xml linguist-language=XML
+*.kt linguist-language=Kotlin
+*.gradle linguist-language=Groovy
