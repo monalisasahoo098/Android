@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "334237997571",
+    "project_id": "fir-genai-188dd",
+    "storage_bucket": "fir-genai-188dd.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:334237997571:android:60e3d8f719c97117630c36",
+        "android_client_info": {
+          "package_name": "com.example.newapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmLMzNzFIu4oqboQ0juRIlb2KIqoZOApQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

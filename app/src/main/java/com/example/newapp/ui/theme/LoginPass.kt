@@ -1,31 +1,32 @@
 package com.example.newapp.ui.theme
 
-
-//import android.graphics.Color
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.*
-//import androidx.compose.material.icons.Icons
-//import androidx.compose.material.icons.filled.Visibility
-//import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.newapp.Screen
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
-fun LoginPass(navController: NavHostController) {
+fun LoginPass(navController: NavHostController, email: String) {
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var loading by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -34,8 +35,6 @@ fun LoginPass(navController: NavHostController) {
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
-
         Text(
             text = "Sign in",
             fontSize = 32.sp,
@@ -45,7 +44,6 @@ fun LoginPass(navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Password Field with visibility toggle
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
@@ -58,24 +56,45 @@ fun LoginPass(navController: NavHostController) {
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done
             ),
-//            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-//            trailingIcon = {
-//                val icon = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-//                val description = if (passwordVisible) "Hide password" else "Show password"
-//
-//                IconButton(onClick = { passwordVisible = !passwordVisible }) {
-//                    Icon(imageVector = icon, contentDescription = description)
-//                }
-//            },
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = {
+                val icon = if (passwordVisible) "Hide" else "Show"
+                Text(
+                    text = icon,
+                    color = Color.Gray,
+                    modifier = Modifier
+                        .padding(end = 8.dp)
+                        .clickable { passwordVisible = !passwordVisible }
+                )
+            },
             singleLine = true
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Continue Button
         Button(
             onClick = {
-                navController.navigate(Screen.About.route)
+                loading = true
+                val auth = FirebaseAuth.getInstance()
+                auth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener { task ->
+                        loading = false
+                        if (task.isSuccessful) {
+                            Toast.makeText(context, "User Registered Successfully", Toast.LENGTH_SHORT).show()
+                            navController.navigate(Screen.About.route)
+                        } else {
+                            // If already registered, sign in
+                            auth.signInWithEmailAndPassword(email, password)
+                                .addOnCompleteListener { signInTask ->
+                                    if (signInTask.isSuccessful) {
+                                        Toast.makeText(context, "Signed In Successfully", Toast.LENGTH_SHORT).show()
+                                        navController.navigate(Screen.About.route)
+                                    } else {
+                                        errorMessage = signInTask.exception?.localizedMessage
+                                    }
+                                }
+                        }
+                    }
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -86,11 +105,20 @@ fun LoginPass(navController: NavHostController) {
             Text("Continue", fontSize = 16.sp)
         }
 
+        if (loading) {
+            Spacer(modifier = Modifier.height(16.dp))
+            CircularProgressIndicator()
+        }
+
+        if (errorMessage != null) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(text = errorMessage!!, color = Color.Red)
+        }
+
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Bottom Text
         Row {
-            Text("Forgot Password ")
+            Text("Forgot Password? ")
             Text(
                 "Reset",
                 fontWeight = FontWeight.Bold,

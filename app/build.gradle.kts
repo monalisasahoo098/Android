@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.gms.google-services") // Required for Firebase
 }
 
 android {
@@ -43,14 +44,14 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.13" 
+        kotlinCompilerExtensionVersion = "1.5.13" // Match Compose version
     }
 }
 
 dependencies {
     val nav_version = "2.9.0"
 
-    // Navigation Compose
+    // Jetpack Navigation for Compose
     implementation("androidx.navigation:navigation-compose:$nav_version")
 
     // Compose Core & Material
@@ -62,9 +63,18 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    // Kotlin 2.0+ requires explicit compose compiler
+
+    // Explicit Compose Compiler for Kotlin 2.0+
     implementation(libs.androidx.compose.compiler)
-    implementation(libs.androidx.navigation.compose)
+
+    // Firebase BOM - version 33.15.0 (newest as of mid-2025)
+    implementation(platform("com.google.firebase:firebase-bom:33.15.0"))
+
+    // Firebase Auth (required for FirebaseApp.initializeApp + authentication)
+    implementation("com.google.firebase:firebase-auth-ktx")
+
+    // Optional: Firebase Analytics or other modules
+    // implementation("com.google.firebase:firebase-analytics-ktx")
 
     // Testing
     testImplementation(libs.junit)
@@ -73,7 +83,7 @@ dependencies {
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
 
-    // Debug
+    // Debug Tools
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }

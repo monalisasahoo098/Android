@@ -1,46 +1,33 @@
 package com.example.newapp
 
 import android.os.Bundle
-import android.window.SplashScreen
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavHostController
+import androidx.compose.runtime.Composable
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.newapp.ui.theme.About
-import com.example.newapp.ui.theme.SplashScreen
-import com.example.newapp.ui.theme.NewAppTheme
-import com.example.newapp.ui.theme.SignInScreen
-import kotlinx.coroutines.delay
-import com.example.newapp.ui.theme.LoginPass
-import com.example.newapp.ui.theme.CreateAccount
-import com.example.newapp.ui.theme.ForgotPassword
-import com.example.newapp.ui.theme.About
-import com.example.newapp.ui.theme.PasswordReset
-// Define screen routes
+import androidx.navigation.navArgument
+import com.example.newapp.ui.theme.*
+import com.google.firebase.FirebaseApp
+
+// Define your screen routes
 sealed class Screen(val route: String) {
     object Splash : Screen("splash_screen")
     object SignIn : Screen("sign_in_screen")
     object LoginPass : Screen("login_pass_screen")
-    object CreateAccount : Screen("Create_Account_screen")
-    object About : Screen("About_screen")
+    object CreateAccount : Screen("create_account_screen")
+    object About : Screen("about_screen")
     object ForgotPassword : Screen("forgot_password_screen")
-    object PasswordReset : Screen("Password_Reset_screen")
+    object PasswordReset : Screen("password_reset_screen")
 }
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        FirebaseApp.initializeApp(this)
         enableEdgeToEdge()
         setContent {
             NewAppTheme {
@@ -67,20 +54,38 @@ fun AppNavigation() {
         composable(Screen.SignIn.route) {
             SignInScreen(navController = navController)
         }
-        //login pass screen
-        composable(Screen.LoginPass.route) {
-            LoginPass(navController = navController)
+
+        // LoginPass Screen with email passed as argument
+        composable(
+            route = Screen.LoginPass.route + "?email={email}",
+            arguments = listOf(
+                navArgument("email") {
+                    type = NavType.StringType
+                    defaultValue = ""
+                    nullable = true
+                }
+            )
+        ) { backStackEntry ->
+            val email = backStackEntry.arguments?.getString("email") ?: ""
+            LoginPass(navController = navController, email = email)
         }
-        //create account screen
+
+        // Create Account
         composable(Screen.CreateAccount.route) {
             CreateAccount(navController = navController)
         }
+
+        // About
         composable(Screen.About.route) {
             About(navController = navController)
         }
+
+        // Forgot Password
         composable(Screen.ForgotPassword.route) {
             ForgotPassword(navController = navController)
         }
+
+        // Password Reset
         composable(Screen.PasswordReset.route) {
             PasswordReset(navController = navController)
         }
