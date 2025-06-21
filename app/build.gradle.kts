@@ -1,10 +1,12 @@
 import org.gradle.kotlin.dsl.implementation
+import org.jetbrains.kotlin.gradle.idea.proto.com.google.protobuf.SourceCodeInfoKt.location
 
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("com.google.gms.google-services") // Required for Firebase
+    id("com.google.gms.google-services")
+
 }
 
 android {
@@ -53,8 +55,7 @@ dependencies {
 
     // Jetpack Navigation for Compose
     implementation("androidx.navigation:navigation-compose:$nav_version")
-
-    // Compose Core & Material
+    implementation ("com.google.android.gms:play-services-location:21.0.1")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -64,26 +65,28 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
-    // Explicit Compose Compiler for Kotlin 2.0+
     implementation(libs.androidx.compose.compiler)
 
-    // Firebase BOM - version 33.15.0 (newest as of mid-2025)
+
     implementation(platform("com.google.firebase:firebase-bom:33.15.0"))
 
-    // Firebase Auth (required for FirebaseApp.initializeApp + authentication)
+
     implementation("com.google.firebase:firebase-auth-ktx")
+    implementation ("com.google.android.gms:play-services-auth:20.7.0")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4")
+    implementation ("com.google.firebase:firebase-firestore-ktx:24.10.3")
 
-    // Optional: Firebase Analytics or other modules
-    // implementation("com.google.firebase:firebase-analytics-ktx")
 
-    // Testing
+
+
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
 
-    // Debug Tools
+
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }

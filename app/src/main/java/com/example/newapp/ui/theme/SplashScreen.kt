@@ -18,10 +18,10 @@ import com.example.newapp.Screen  // Make sure this points to your sealed Screen
 
 @Composable
 fun SplashScreen(navController: NavHostController) {
-    // Navigate to SignIn screen after 2 seconds
+    // Navigate to location screen screen after 2 seconds
     LaunchedEffect(Unit) {
         delay(2000)
-        navController.navigate(Screen.SignIn.route) {
+        navController.navigate(Screen.Location.route) {
             popUpTo(Screen.Splash.route) { inclusive = true } // removes Splash from backstack
         }
     }

@@ -76,6 +76,7 @@ fun ForgotPassword(navController: NavHostController) {
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Done
             ),
+            textStyle = LocalTextStyle.current.copy(color = Color.Black),
             singleLine = true
         )
 

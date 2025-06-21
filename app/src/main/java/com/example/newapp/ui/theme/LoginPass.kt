@@ -56,6 +56,7 @@ fun LoginPass(navController: NavHostController, email: String) {
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done
             ),
+            textStyle = LocalTextStyle.current.copy(color = Color.Black),
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
                 val icon = if (passwordVisible) "Hide" else "Show"

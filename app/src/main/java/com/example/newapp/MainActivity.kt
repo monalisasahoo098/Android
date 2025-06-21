@@ -1,27 +1,42 @@
 package com.example.newapp
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.newapp.ui.theme.*
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.FirebaseApp
+import androidx.compose.runtime.remember
+import androidx.compose.ui.unit.dp
+//import com.example.newapp.LocationScreen
+
 
 // Define your screen routes
 sealed class Screen(val route: String) {
     object Splash : Screen("splash_screen")
+    object Location : Screen("location_screen")
     object SignIn : Screen("sign_in_screen")
     object LoginPass : Screen("login_pass_screen")
     object CreateAccount : Screen("create_account_screen")
     object About : Screen("about_screen")
     object ForgotPassword : Screen("forgot_password_screen")
     object PasswordReset : Screen("password_reset_screen")
+
 }
 
 class MainActivity : ComponentActivity() {
@@ -37,6 +52,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
@@ -48,6 +64,9 @@ fun AppNavigation() {
         // Splash Screen
         composable(Screen.Splash.route) {
             SplashScreen(navController = navController)
+        }
+        composable(Screen.Location.route) {
+            LocationScreen(navController = navController)
         }
 
         // Sign In Screen
